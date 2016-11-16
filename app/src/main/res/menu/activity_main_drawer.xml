@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<group android:checkableBehavior="single">
+		<item
+			android:id="@+id/nav_register"
+			android:icon="@drawable/ic_menu_camera"
+			android:title="Register"/>
+		<item
+			android:id="@+id/nav_login"
+			android:icon="@drawable/ic_menu_gallery"
+			android:title="Login"/>
+		<item
+			android:id="@+id/nav_request_password_reset"
+			android:icon="@drawable/ic_menu_slideshow"
+			android:title="Request password reset"/>
+		<item
+			android:id="@+id/nav_request_magic_login"
+			android:icon="@drawable/ic_menu_manage"
+			android:title="Request magic login"/>
+		<item
+			android:id="@+id/nav_logout"
+			android:icon="@drawable/ic_menu_camera"
+			android:title="Logout"/>
+	</group>
+
+	<item android:title="Communicate">
+		<menu>
+			<item
+				android:id="@+id/nav_facebook"
+				android:icon="@drawable/ic_menu_share"
+				android:title="Facebook"/>
+			<item
+				android:id="@+id/nav_twitter"
+				android:icon="@drawable/ic_menu_send"
+				android:title="Twitter"/>
+			<item
+				android:id="@+id/nav_linkedin"
+				android:icon="@drawable/ic_menu_share"
+				android:title="Linkedin"/>
+			<item
+				android:id="@+id/nav_google"
+				android:icon="@drawable/ic_menu_send"
+				android:title="Google"/>
+		</menu>
+	</item>
+
+</menu>
