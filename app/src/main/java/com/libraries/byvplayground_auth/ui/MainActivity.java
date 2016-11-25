@@ -79,40 +79,23 @@ public class MainActivity extends AppCompatActivity
 										Log.d(DEBUG_TAG+".getInvitation", "getQueryParameter: " + uri.getQueryParameter("code"));
 										Log.d(DEBUG_TAG+".getInvitation", "getEncodedPath: " + uri.getEncodedPath());
 										Log.d(DEBUG_TAG+".getInvitation", "getPath: " + uri.getPath());
-										switch (AuthController.LinkAction.fromString(uri.getPath())){
-											case MAGIC_LOGIN:
-												VolleyController.getInstance().onCall(new InternetCall()
-														.setUrl(UrlLogic.getBaseUrl()+"/auth/token")
-														.setMethod(InternetCall.Method.POST)
-														.setCode("code_do_magic_login")
-														.putParam("grant_type", AuthController.GrantType.MAGIC_LINK.toString())
-														.putParam("code", uri.getQueryParameter("code"))
-														.addCallback(new VolleyController.IOCallbacks() {
-															@Override
-															public void onResponse(String s, String s1) {
-																Log.d(DEBUG_TAG+".getInvitation", "Code: " + s1 + " | Response: " + s);
-																try {
-																	AuthController.getInstance().onLogin(new JSONObject(s));
-																} catch (JSONException e) {
-																	e.printStackTrace();
-																}
-															}
+										boolean consumed = AuthController.getInstance().manageAppOpenUri(MainActivity.this, uri, new VolleyController.IOCallbacks() {
+											@Override
+											public void onResponse(String s, String s1) {
+												Log.d(DEBUG_TAG+".getInvitation", "Code: " + s1 + " | Response: " + s);
+												try {
+													AuthController.getInstance().onLogin(new JSONObject(s));
+												} catch (JSONException e) {
+													e.printStackTrace();
+												}
+											}
 
-															@Override
-															public void onResponseError(VolleyError volleyError, String s) {
-																Log.d(DEBUG_TAG+".getInvitation", "Code: " + s + " | Error: " + volleyError);
-															}
-														})
-												);
-												break;
-											case PASSWORD_RESET:
-												ChangePasswordActivity.navigate(MainActivity.this, uri.getQueryParameter("code"));
-												break;
-											case UNKNOWN:
-												break;
-											default:
-												break;
-										}
+											@Override
+											public void onResponseError(VolleyError volleyError, String s) {
+												Log.d(DEBUG_TAG+".getInvitation", "Code: " + s + " | Error: " + volleyError);
+											}
+										});
+										//Make something if action not consumed?
 									}
 									// ...
 								} else {
@@ -196,59 +179,43 @@ public class MainActivity extends AppCompatActivity
 		} else if (id == R.id.nav_login) {
 			LoginActivity.navigate(this);
 		} else if (id == R.id.nav_request_password_reset) {
-			VolleyController.getInstance().onCall(new InternetCall().setUrl(UrlLogic.getBaseUrl()+"/auth-password/api/reset")
-					.setMethod(InternetCall.Method.POST)
-					.putHeader("Content-Type", "application/x-www-form-urlencoded")
-					.putParam("email", AuthController.getInstance().getUser().getEmail())
-					.setCode("code_request_password_reset")
-					.addCallback(new VolleyController.IOCallbacks() {
-						@Override
-						public void onResponse(String s, String s1) {
-							Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
-						}
+			AuthController.getInstance().doRequestPasswordReset(new VolleyController.IOCallbacks() {
+				@Override
+				public void onResponse(String s, String s1) {
+					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
+				}
 
-						@Override
-						public void onResponseError(VolleyError volleyError, String s) {
-							Log.d(DEBUG_TAG, "Code " + s + " | ResponseJson: " + volleyError);
-						}
-					})
-			);
+				@Override
+				public void onResponseError(VolleyError volleyError, String s) {
+					Log.d(DEBUG_TAG, "Code " + s + " | ResponseJson: " + volleyError);
+				}
+			});
 		} else if (id == R.id.nav_request_magic_login) {
-			VolleyController.getInstance().onCall(new InternetCall().setUrl(UrlLogic.getBaseUrl()+"/auth-password/api/magic")
-					.setMethod(InternetCall.Method.POST)
-					.putHeader("Content-Type", "application/x-www-form-urlencoded")
-					.putParam("email", AuthController.getInstance().getUser().getEmail())
-					.setCode("code_request_magic_login")
-					.addCallback(new VolleyController.IOCallbacks() {
-						@Override
-						public void onResponse(String s, String s1) {
-							Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
-						}
+			AuthController.getInstance().doRequestMagicLogin(AuthController.getInstance().getUser().getEmail(), new VolleyController.IOCallbacks() {
+				@Override
+				public void onResponse(String s, String s1) {
+					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
+				}
 
-						@Override
-						public void onResponseError(VolleyError volleyError, String s) {
-							Log.d(DEBUG_TAG, "Code " + s + " | ResponseJson: " + volleyError);
-						}
-					})
-			);
+				@Override
+				public void onResponseError(VolleyError volleyError, String s) {
+					Log.d(DEBUG_TAG, "Code " + s + " | ResponseJson: " + volleyError);
+				}
+			});
 		} else if (id == R.id.nav_logout) {
-			VolleyController.getInstance().onCall(new InternetCall().setUrl(UrlLogic.getBaseUrl()+"/auth/logout")
-					.setMethod(InternetCall.Method.POST)
-					.setCode("code_logout")
-					.addCallback(new VolleyController.IOCallbacks() {
-						@Override
-						public void onResponse(String s, String s1) {
-							Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
-							//TODO logout
-							Log.d(DEBUG_TAG, "TODO logout");
-						}
+			AuthController.getInstance().doLogout(new VolleyController.IOCallbacks() {
+				@Override
+				public void onResponse(String s, String s1) {
+					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
+					//TODO logout
+					Log.d(DEBUG_TAG, "TODO logout");
+				}
 
-						@Override
-						public void onResponseError(VolleyError volleyError, String s) {
-							Log.d(DEBUG_TAG, "Code " + s + " | ResponseJson: " + volleyError);
-						}
-					})
-			);
+				@Override
+				public void onResponseError(VolleyError volleyError, String s) {
+					Log.d(DEBUG_TAG, "Code " + s + " | ResponseJson: " + volleyError);
+				}
+			});
 		} else if (id == R.id.nav_facebook) {
 			WebviewActivity.navigate(MainActivity.this, WebviewActivity.LoginType.FACEBOOK);
 		} else if (id == R.id.nav_twitter) {

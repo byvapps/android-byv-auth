@@ -35,7 +35,7 @@ dependencies {
 	compile "com.google.firebase:firebase-messaging:${firebase_version}"        //Firebase messaging
 	compile "com.google.firebase:firebase-invites:${firebase_version}"
 	compile 'com.google.code.gson:gson:2.5'                                     //JSON utilities
-	compile 'com.github.inlacou:VolleyControllerLibrary:2.1.2'
+	compile 'com.github.inlacou:VolleyControllerLibrary:2.1.3'
 	compile 'com.github.byvapps:android-byv-devices:1.0.3'
 	testCompile 'junit:junit:4.12'
 }

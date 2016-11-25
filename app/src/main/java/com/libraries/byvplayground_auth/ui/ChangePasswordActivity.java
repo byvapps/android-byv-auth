@@ -93,30 +93,22 @@ public class ChangePasswordActivity extends AppCompatActivity {
 		button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				VolleyController.getInstance().onCall(new InternetCall()
-						.setUrl(UrlLogic.getBaseUrl()+"/auth/token")
-						.setMethod(InternetCall.Method.POST)
-						.setCode("code_do_password_reset_login")
-						.putParam("grant_type", AuthController.GrantType.PASSWORD_RESET.toString())
-						.putParam("password", editTextNewPassword.getText().toString())
-						.putParam("code", code)
-						.addCallback(new VolleyController.IOCallbacks() {
-							@Override
-							public void onResponse(String s, String s1) {
-								Log.d(DEBUG_TAG, "Code: " + s1 + " | Response: " + s);
-								try {
-									AuthController.getInstance().onLogin(new JSONObject(s));
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
-							}
+				AuthController.getInstance().doChangePassword(code, editTextNewPassword.getText().toString(), new VolleyController.IOCallbacks() {
+					@Override
+					public void onResponse(String s, String s1) {
+						Log.d(DEBUG_TAG, "Code: " + s1 + " | Response: " + s);
+						try {
+							AuthController.getInstance().onLogin(new JSONObject(s));
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
 
-							@Override
-							public void onResponseError(VolleyError volleyError, String s) {
-								Log.d(DEBUG_TAG, "Code: " + s + " | Error: " + volleyError);
-							}
-						})
-				);
+					@Override
+					public void onResponseError(VolleyError volleyError, String s) {
+						Log.d(DEBUG_TAG, "Code: " + s + " | Error: " + volleyError);
+					}
+				});
 			}
 		});
 	}

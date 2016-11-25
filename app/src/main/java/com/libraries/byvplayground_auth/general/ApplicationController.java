@@ -1,6 +1,7 @@
 package com.libraries.byvplayground_auth.general;
 
 import android.app.Application;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
@@ -8,6 +9,7 @@ import com.google.gson.Gson;
 import com.libraries.auth.Auth;
 import com.libraries.auth.AuthController;
 import com.libraries.auth.User;
+import com.libraries.byvplayground_auth.ui.ChangePasswordActivity;
 import com.libraries.devices.Device;
 import com.libraries.devices.DeviceController;
 import com.libraries.inlacou.volleycontroller.InternetCall;
@@ -179,7 +181,7 @@ public class ApplicationController extends Application {
 				internetCall.putHeader("deviceId", DeviceController.getInstance().getDevice().getId()+"");
 			}
 		});
-		AuthController.getInstance().init("app", "secret-app", new AuthController.Callbacks() {
+		AuthController.getInstance().init(UrlLogic.getBaseUrl(), "app", "secret-app", new AuthController.Callbacks() {
 			@Override
 			public void saveAuthData(Auth auth) {
 				SharedPreferencesManager.getInstance().setAuth(auth);
@@ -202,7 +204,136 @@ public class ApplicationController extends Application {
 
 			@Override
 			public void doUserGet() {
-				ApplicationController.getInstance().doUserGet();
+				AuthController.getInstance().doUserGet(null);
+			}
+
+			@Override
+			public void onUserGet(String url, Map<String, String> headers, Map<String, String> params, Object callback){
+				if(callback == null){
+					callback = new VolleyController.IOCallbacks() {
+						@Override
+						public void onResponse(String response, String code) {
+							Log.d(DEBUG_TAG, "Code: " + code + " | Response: " + response);
+							try {
+								JSONObject jsonObject = new JSONObject(response);
+								AuthController.getInstance().onUserGet(jsonObject);
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							//TODO send event with user data. This method will probably mean user has logged in
+							Log.d(DEBUG_TAG, "TODO send event with user data. This method will probably mean user has logged in");
+						}
+
+						@Override
+						public void onResponseError(VolleyError volleyError, String s) {
+
+						}
+					};
+				}
+				VolleyController.getInstance().onCall(new InternetCall()
+						.setUrl(url)
+						.setCode("code_user_get")
+						.addCallback((VolleyController.IOCallbacks) callback)
+				);
+			}
+
+			@Override
+			public void onSocialLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback) {
+				VolleyController.getInstance().onCall(new InternetCall()
+						.setUrl(url)
+						.setMethod(InternetCall.Method.POST)
+						.setCode("code_login_social")
+						.putHeaders(headers)
+						.putParams(params)
+						.addCallback((VolleyController.IOCallbacks) callback)
+				);
+			}
+
+			@Override
+			public void onLogout(String url, Map<String, String> headers, Map<String, String> params, Object callback) {
+				VolleyController.getInstance().onCall(new InternetCall()
+						.setUrl(url)
+						.setMethod(InternetCall.Method.POST)
+						.setCode("code_logout")
+						.putHeaders(headers)
+						.putParams(params)
+						.addCallback((VolleyController.IOCallbacks) callback)
+				);
+			}
+
+			@Override
+			public void onRequestPasswordReset(String url, Map<String, String> headers, Map<String, String> params, Object callback) {
+				VolleyController.getInstance().onCall(new InternetCall()
+						.setUrl(url)
+						.setMethod(InternetCall.Method.POST)
+						.setCode("code_request_password_reset")
+						.putHeaders(headers)
+						.putParams(params)
+						.addCallback((VolleyController.IOCallbacks) callback)
+				);
+			}
+
+			@Override
+			public void onRequestMagicLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback) {
+				VolleyController.getInstance().onCall(new InternetCall()
+						.setUrl(url)
+						.setMethod(InternetCall.Method.POST)
+						.setCode("code_request_magic_login")
+						.putHeaders(headers)
+						.putParams(params)
+						.addCallback((VolleyController.IOCallbacks) callback)
+				);
+			}
+
+			@Override
+			public void onPasswordChange(String url, Map<String, String> headers, Map<String, String> params, Object callback) {
+				VolleyController.getInstance().onCall(new InternetCall()
+						.setUrl(url)
+						.setMethod(InternetCall.Method.POST)
+						.setCode("code_do_password_reset_login")
+						.putHeaders(headers)
+						.putParams(params)
+						.addCallback((VolleyController.IOCallbacks) callback)
+				);
+			}
+
+			@Override
+			public void onAppOpenMagicLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback) {
+				VolleyController.getInstance().onCall(new InternetCall()
+						.setUrl(url)
+						.setMethod(InternetCall.Method.POST)
+						.setCode("code_do_magic_login")
+						.putHeaders(headers)
+						.putParams(params)
+						.addCallback((VolleyController.IOCallbacks) callback)
+				);
+			}
+
+			@Override
+			public void onAppOpenChangePassword(AppCompatActivity appCompatActivity, String code) {
+				ChangePasswordActivity.navigate(appCompatActivity, code);
+			}
+
+			@Override
+			public void onRegister(String url, Map<String, String> headers, Map<String, String> params, Object callback) {
+				VolleyController.getInstance().onCall(new InternetCall().setUrl(url)
+						.setMethod(InternetCall.Method.POST)
+						.putHeaders(headers)
+						.putParams(params)
+						.setCode("code_register")
+						.addCallback((VolleyController.IOCallbacks) callback)
+				);
+			}
+
+			@Override
+			public void onPostLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback) {
+				VolleyController.getInstance().onCall(new InternetCall().setUrl(url)
+						.setMethod(InternetCall.Method.POST)
+						.putHeaders(headers)
+						.putParams(params)
+						.setCode("code_login")
+						.addCallback((VolleyController.IOCallbacks) callback)
+				);
 			}
 		});
 		VolleyController.getInstance().addInterceptor(new InternetCall.Interceptor() {
@@ -213,30 +344,6 @@ public class ApplicationController extends Application {
 				if(AuthController.getInstance().getAuth()!=null) internetCall.putHeader("Authorization", "Bearer " + AuthController.getInstance().getAuth().getAccess_token());
 			}
 		});
-	}
-
-	public void doUserGet() {
-		VolleyController.getInstance().onCall(new InternetCall().setUrl(UrlLogic.getBaseUrl()+"/api/profile")
-				.setCode("code_user_get")
-				.addCallback(new VolleyController.IOCallbacks() {
-					@Override
-					public void onResponse(String response, String code) {
-						Log.d(DEBUG_TAG, "Code: " + code + " | Response: " + response);
-						try {
-							JSONObject jsonObject = new JSONObject(response);
-							AuthController.getInstance().onUserGet(jsonObject);
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-						//TODO send event with user data. This method will probably mean user has logged in
-						Log.d(DEBUG_TAG, "TODO send event with user data. This method will probably mean user has logged in");
-					}
-
-					@Override
-					public void onResponseError(VolleyError volleyError, String s) {
-
-					}
-				}));
 	}
 
 	@Override

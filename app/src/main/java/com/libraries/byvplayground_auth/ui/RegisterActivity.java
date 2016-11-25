@@ -133,36 +133,25 @@ public class RegisterActivity extends AppCompatActivity {
 			// Show a progress spinner, and kick off a background task to
 			// perform the user login attempt.
 			showProgress(true);
-			HashMap<String, String> params = new HashMap<>();
-			params.put("grant_type", AuthController.GrantType.REGISTER.toString());
-			params.put("username", email);
-			params.put("password", password);
-			params.put("name", name);
-			InternetCall internetCall = new InternetCall().setUrl("http://playground.byvapps.com/auth/token")
-					.setMethod(InternetCall.Method.POST)
-					.putHeader("Content-Type", "application/x-www-form-urlencoded")
-					.setParams(params)
-					.setCode("code_register")
-					.addCallback(new VolleyController.IOCallbacks() {
-						@Override
-						public void onResponse(String s, String s1) {
-							Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
-							showProgress(false);
-							try {
-								JSONObject jsonObject = new JSONObject(s);
-								AuthController.getInstance().onRegister(jsonObject);
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-						}
+			AuthController.getInstance().doRegister(email, password, name, new VolleyController.IOCallbacks() {
+				@Override
+				public void onResponse(String s, String s1) {
+					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
+					showProgress(false);
+					try {
+						JSONObject jsonObject = new JSONObject(s);
+						AuthController.getInstance().onRegister(jsonObject);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
 
-						@Override
-						public void onResponseError(VolleyError volleyError, String s) {
-							Log.d(DEBUG_TAG, "Code " + s + " | ResponseJson: " + volleyError);
-							showProgress(false);
-						}
-					});
-			VolleyController.getInstance().onCall(internetCall);
+				@Override
+				public void onResponseError(VolleyError volleyError, String s) {
+					Log.d(DEBUG_TAG, "Code " + s + " | ResponseJson: " + volleyError);
+					showProgress(false);
+				}
+			});
 		}
 	}
 

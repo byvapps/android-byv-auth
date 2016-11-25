@@ -122,35 +122,25 @@ public class LoginActivity extends AppCompatActivity {
 			// Show a progress spinner, and kick off a background task to
 			// perform the user login attempt.
 			showProgress(true);
-			HashMap<String, String> params = new HashMap<>();
-			params.put("grant_type", AuthController.GrantType.LOGIN.toString());
-			params.put("username", email);
-			params.put("password", password);
-			VolleyController.getInstance().onCall(new InternetCall().setUrl(UrlLogic.getBaseUrl()+"/auth/token")
-					.setMethod(InternetCall.Method.POST)
-					.putHeader("Content-Type", "application/x-www-form-urlencoded")
-					.setParams(params)
-					.setCode("code_login")
-					.addCallback(new VolleyController.IOCallbacks() {
-						@Override
-						public void onResponse(String s, String s1) {
-							Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
-							showProgress(false);
-							try {
-								JSONObject jsonObject = new JSONObject(s);
-								AuthController.getInstance().onLogin(jsonObject);
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-						}
+			AuthController.getInstance().doLogin(email, password, new VolleyController.IOCallbacks() {
+				@Override
+				public void onResponse(String s, String s1) {
+					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
+					showProgress(false);
+					try {
+						JSONObject jsonObject = new JSONObject(s);
+						AuthController.getInstance().onLogin(jsonObject);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
 
-						@Override
-						public void onResponseError(VolleyError volleyError, String s) {
-							Log.d(DEBUG_TAG, "Code " + s + " | ResponseJson: " + volleyError);
-							showProgress(false);
-						}
-					})
-			);
+				@Override
+				public void onResponseError(VolleyError volleyError, String s) {
+					Log.d(DEBUG_TAG, "Code " + s + " | ResponseJson: " + volleyError);
+					showProgress(false);
+				}
+			});
 		}
 	}
 

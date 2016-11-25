@@ -1,6 +1,12 @@
 package com.libraries.auth;
 
+import android.net.Uri;
+import android.support.v7.app.AppCompatActivity;
+
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by inlacou on 15/11/16.
@@ -12,6 +18,7 @@ public class AuthController {
 	private Callbacks callbacks;
 	private Auth auth;
 	private User user;
+	private String baseUrl;
 
 	public static AuthController getInstance() {
 		return ourInstance;
@@ -20,7 +27,8 @@ public class AuthController {
 	private AuthController() {
 	}
 
-	public void init(String clientId, String clientSecret, Callbacks callbacks){
+	public void init(String baseUrl, String clientId, String clientSecret, Callbacks callbacks){
+		this.baseUrl = baseUrl;
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
 		this.callbacks = callbacks;
@@ -66,6 +74,84 @@ public class AuthController {
 		callbacks.saveAuthData(auth);
 	}
 
+	public void doLogout(Object callback) {
+		callbacks.onLogout(baseUrl+"/auth/logout", null, null, callback);
+	}
+
+	public void doSocialLogin(String code, Object callback) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put("code", code);
+		params.put("grant_type", AuthController.GrantType.SOCIAL_LOGIN.toString());
+		callbacks.onSocialLogin(baseUrl+"/auth/token", null, params, callback);
+	}
+
+	public void doRequestMagicLogin(String email, Object callback) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put("email", email);
+		callbacks.onRequestMagicLogin(baseUrl+"/auth-password/api/magic", null, params, callback);
+	}
+
+	public void doRequestPasswordReset(Object callback) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put("email", AuthController.getInstance().getUser().getEmail());
+		callbacks.onRequestPasswordReset(baseUrl+"/auth-password/api/reset", null, params, callback);
+	}
+
+	public void doChangePassword(String code, String password, Object callback) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put("code", code);
+		params.put("password", password);
+		params.put("grant_type", AuthController.GrantType.PASSWORD_RESET.toString());
+		callbacks.onPasswordChange(baseUrl+"/auth/token", null, params, callback);
+	}
+
+	/**
+	 *
+	 * @param appCompatActivity
+	 * @param uri
+	 * @param callback for network calls.
+	 * @return
+	 */
+	public boolean manageAppOpenUri(AppCompatActivity appCompatActivity, Uri uri, Object callback) {
+		switch (AuthController.LinkAction.fromString(uri.getPath())){
+			case MAGIC_LOGIN:
+				HashMap<String, String> params = new HashMap<>();
+				params.put("grant_type", AuthController.GrantType.MAGIC_LINK.toString());
+				params.put("code", uri.getQueryParameter("code"));
+				callbacks.onAppOpenMagicLogin(baseUrl+"/auth/token", null, params, callback);
+				return true;
+			case PASSWORD_RESET:
+				callbacks.onAppOpenChangePassword(appCompatActivity, uri.getQueryParameter("code"));
+				return true;
+			case UNKNOWN:
+				return false;
+			default:
+				return false;
+		}
+	}
+
+	public void doRegister(String email, String password, String name, Object callback) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put("username", email);
+		params.put("password", password);
+		params.put("name", name);
+		params.put("grant_type", AuthController.GrantType.REGISTER.toString());
+		callbacks.onRegister(baseUrl+"/auth/token", null, params, callback);
+	}
+
+	public void doLogin(String email, String password, Object callback) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put("email", email);
+		params.put("password", password);
+		params.put("grant_type", AuthController.GrantType.LOGIN.toString());
+
+		callbacks.onPostLogin(baseUrl+"/auth/token", null, params, callback);
+	}
+
+	public void doUserGet(Object callback) {
+		callbacks.onUserGet(baseUrl+"/api/profile", null, null, callback);
+	}
+
 	public enum GrantType {
 		LOGIN("password"), REGISTER("signup"), PASSWORD_RESET("password_reset"), SOCIAL_LOGIN("code"), MAGIC_LINK("magic_link"), REFRESH_TOKEN("refresh_token");
 
@@ -102,5 +188,15 @@ public class AuthController {
 		void saveUserData(User user);
 		User loadUserData();
 		void doUserGet();
+		void onSocialLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback);
+		void onLogout(String url, Map<String, String> headers, Map<String, String> params, Object callback);
+		void onRequestPasswordReset(String url, Map<String, String> headers, Map<String, String> params, Object callback);
+		void onRequestMagicLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback);
+		void onPasswordChange(String url, Map<String, String> headers, Map<String, String> params, Object callback);
+		void onAppOpenMagicLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback);
+		void onAppOpenChangePassword(AppCompatActivity appCompatActivity, String code);
+		void onRegister(String url, Map<String, String> headers, Map<String, String> params, Object callback);
+		void onPostLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback);
+		void onUserGet(String url, Map<String, String> headers, Map<String, String> params, Object callback);
 	}
 }

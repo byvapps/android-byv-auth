@@ -100,30 +100,23 @@ public class WebviewActivity extends AppCompatActivity {
 				Log.d(DEBUG_TAG+".onPageFinished", "url: " + url);
 				final Uri uri = Uri.parse(url);
 				if(uri.getPath().contains("profile")){
-					VolleyController.getInstance().onCall(new InternetCall()
-							.setUrl(UrlLogic.getBaseUrl()+"/auth/token")
-							.setMethod(InternetCall.Method.POST)
-							.setCode("code_login_social")
-							.putParam("code", code)
-							.putParam("grant_type", AuthController.GrantType.SOCIAL_LOGIN.toString())
-							.addCallback(new VolleyController.IOCallbacks() {
-								@Override
-								public void onResponse(String response, String code) {
-									Log.d(DEBUG_TAG, "Code: " + code + " | Response: " + response);
-									try {
-										AuthController.getInstance().onLogin(new JSONObject(response));
-									} catch (JSONException e) {
-										e.printStackTrace();
-									}
-									WebviewActivity.this.finish();
-								}
+					AuthController.getInstance().doSocialLogin(code, new VolleyController.IOCallbacks() {
+						@Override
+						public void onResponse(String response, String code) {
+							Log.d(DEBUG_TAG, "Code: " + code + " | Response: " + response);
+							try {
+								AuthController.getInstance().onLogin(new JSONObject(response));
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							WebviewActivity.this.finish();
+						}
 
-								@Override
-								public void onResponseError(VolleyError volleyError, String code) {
-									Log.d(DEBUG_TAG, "Code: " + code + " | Error: " + volleyError);
-								}
-							})
-					);
+						@Override
+						public void onResponseError(VolleyError volleyError, String code) {
+							Log.d(DEBUG_TAG, "Code: " + code + " | Error: " + volleyError);
+						}
+					});
 				}
 				super.onPageFinished(view, url);
 			}
