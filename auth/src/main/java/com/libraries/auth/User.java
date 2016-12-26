@@ -54,6 +54,13 @@ public class User {
 				e.printStackTrace();
 			}
 		}
+		if(jsonObject.has("id")){
+			try {
+				id = jsonObject.getLong("id");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 		if(jsonObject.has("createdAt")){
 			try {
 				createdAt = jsonObject.getLong("createdAt");
@@ -91,5 +98,17 @@ public class User {
 
 	public String getEmail() {
 		return email;
+	}
+
+	public void setCreatedAt(long createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public void setUpdatedAt(long updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

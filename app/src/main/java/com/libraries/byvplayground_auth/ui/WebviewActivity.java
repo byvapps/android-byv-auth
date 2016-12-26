@@ -22,6 +22,7 @@ import com.libraries.auth.Auth;
 import com.libraries.auth.AuthController;
 import com.libraries.byvplayground_auth.R;
 import com.libraries.byvplayground_auth.general.UrlLogic;
+import com.libraries.inlacou.volleycontroller.CustomResponse;
 import com.libraries.inlacou.volleycontroller.InternetCall;
 import com.libraries.inlacou.volleycontroller.VolleyController;
 
@@ -102,10 +103,10 @@ public class WebviewActivity extends AppCompatActivity {
 				if(uri.getPath().contains("profile")){
 					AuthController.getInstance().doSocialLogin(code, new VolleyController.IOCallbacks() {
 						@Override
-						public void onResponse(String response, String code) {
-							Log.d(DEBUG_TAG, "Code: " + code + " | Response: " + response);
+						public void onResponse(CustomResponse customResponse, String code) {
+							Log.d(DEBUG_TAG, "Code: " + code + " | Response: " + customResponse.getData());
 							try {
-								AuthController.getInstance().onLogin(new JSONObject(response));
+								AuthController.getInstance().onLogin(new JSONObject(customResponse.getData()));
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}

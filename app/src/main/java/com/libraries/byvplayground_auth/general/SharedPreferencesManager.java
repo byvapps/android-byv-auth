@@ -94,7 +94,9 @@ public class SharedPreferencesManager {
 
 	public Device getDevice() {
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(ApplicationController.getInstance());
-		return new Gson().fromJson(sharedPreferences.getString(SHAREDPREFERENCES_DEVICE, ""), Device.class);
+		Device device = new Gson().fromJson(sharedPreferences.getString(SHAREDPREFERENCES_DEVICE, ""), Device.class);
+		Log.d(DEBUG_TAG, "getDevice... " + new Gson().toJson(device));
+		return device;
 	}
 
 	public void setGCMTokenSent(boolean b) {

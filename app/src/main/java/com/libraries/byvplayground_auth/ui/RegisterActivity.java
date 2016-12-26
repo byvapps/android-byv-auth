@@ -20,7 +20,9 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.libraries.auth.AuthController;
+import com.libraries.byvplayground_auth.BuildConfig;
 import com.libraries.byvplayground_auth.R;
+import com.libraries.inlacou.volleycontroller.CustomResponse;
 import com.libraries.inlacou.volleycontroller.InternetCall;
 import com.libraries.inlacou.volleycontroller.VolleyController;
 
@@ -68,6 +70,12 @@ public class RegisterActivity extends AppCompatActivity {
 				return false;
 			}
 		});
+
+		if(BuildConfig.DEBUG){
+			mNameView.setText("inlacou");
+			mEmailView.setText("inlacou@sharklasers.com");
+			mPasswordView.setText("qwerty");
+		}
 
 		Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 		mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -135,11 +143,11 @@ public class RegisterActivity extends AppCompatActivity {
 			showProgress(true);
 			AuthController.getInstance().doRegister(email, password, name, new VolleyController.IOCallbacks() {
 				@Override
-				public void onResponse(String s, String s1) {
-					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
+				public void onResponse(CustomResponse customResponse, String s1) {
+					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + customResponse.getData());
 					showProgress(false);
 					try {
-						JSONObject jsonObject = new JSONObject(s);
+						JSONObject jsonObject = new JSONObject(customResponse.getData());
 						AuthController.getInstance().onRegister(jsonObject);
 					} catch (JSONException e) {
 						e.printStackTrace();

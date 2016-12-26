@@ -61,7 +61,7 @@ public class RegistrationIntentService extends IntentService {
 			DeviceController.getInstance().onRegistrationIdObtained(token);
 			DeviceController.getInstance().postDevice();
 		}else {
-			Log.d(DEBUG_TAG, "Puting new device");
+			Log.d(DEBUG_TAG, "Puting modified device");
 			DeviceController.getInstance().onRegistrationIdObtained(token);
 			DeviceController.getInstance().putDevice();
 		}

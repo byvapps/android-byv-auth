@@ -55,13 +55,13 @@ public class AuthController {
 	public void onLogin(JSONObject jsonObject) {
 		auth = new Auth(jsonObject);
 		callbacks.saveAuthData(auth);
-		callbacks.doUserGet();
+		doUserGet();
 	}
 
 	public void onRegister(JSONObject jsonObject) {
 		auth = new Auth(jsonObject);
 		callbacks.saveAuthData(auth);
-		callbacks.doUserGet();
+		doUserGet();
 	}
 
 	public void onUserGet(JSONObject jsonObject) {
@@ -141,15 +141,15 @@ public class AuthController {
 
 	public void doLogin(String email, String password, Object callback) {
 		HashMap<String, String> params = new HashMap<>();
-		params.put("email", email);
+		params.put("username", email);
 		params.put("password", password);
 		params.put("grant_type", AuthController.GrantType.LOGIN.toString());
 
 		callbacks.onPostLogin(baseUrl+"/auth/token", null, params, callback);
 	}
 
-	public void doUserGet(Object callback) {
-		callbacks.onUserGet(baseUrl+"/api/profile", null, null, callback);
+	public void doUserGet() {
+		callbacks.onUserGet(baseUrl+"/api/profile", null, null);
 	}
 
 	public enum GrantType {
@@ -187,7 +187,7 @@ public class AuthController {
 		Auth loadAuthData();
 		void saveUserData(User user);
 		User loadUserData();
-		void doUserGet();
+
 		void onSocialLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback);
 		void onLogout(String url, Map<String, String> headers, Map<String, String> params, Object callback);
 		void onRequestPasswordReset(String url, Map<String, String> headers, Map<String, String> params, Object callback);
@@ -197,6 +197,14 @@ public class AuthController {
 		void onAppOpenChangePassword(AppCompatActivity appCompatActivity, String code);
 		void onRegister(String url, Map<String, String> headers, Map<String, String> params, Object callback);
 		void onPostLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback);
-		void onUserGet(String url, Map<String, String> headers, Map<String, String> params, Object callback);
+
+		/**
+		 * Call server with provided params and get user data
+		 * @param url
+		 * @param headers
+		 * @param params
+		 * @param callback
+		 */
+		void onUserGet(String url, Map<String, String> headers, Map<String, String> params);
 	}
 }

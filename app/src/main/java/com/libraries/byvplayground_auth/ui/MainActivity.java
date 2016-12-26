@@ -24,10 +24,12 @@ import com.google.android.gms.appinvite.AppInviteReferral;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.libraries.auth.Auth;
 import com.libraries.auth.AuthController;
 import com.libraries.byvplayground_auth.R;
 import com.libraries.byvplayground_auth.general.ApplicationController;
 import com.libraries.byvplayground_auth.general.UrlLogic;
+import com.libraries.inlacou.volleycontroller.CustomResponse;
 import com.libraries.inlacou.volleycontroller.InternetCall;
 import com.libraries.inlacou.volleycontroller.VolleyController;
 
@@ -81,10 +83,10 @@ public class MainActivity extends AppCompatActivity
 										Log.d(DEBUG_TAG+".getInvitation", "getPath: " + uri.getPath());
 										boolean consumed = AuthController.getInstance().manageAppOpenUri(MainActivity.this, uri, new VolleyController.IOCallbacks() {
 											@Override
-											public void onResponse(String s, String s1) {
-												Log.d(DEBUG_TAG+".getInvitation", "Code: " + s1 + " | Response: " + s);
+											public void onResponse(CustomResponse customResponse, String s1) {
+												Log.d(DEBUG_TAG+".getInvitation", "Code: " + s1 + " | Response: " + customResponse.getData());
 												try {
-													AuthController.getInstance().onLogin(new JSONObject(s));
+													AuthController.getInstance().onLogin(new JSONObject(customResponse.getData()));
 												} catch (JSONException e) {
 													e.printStackTrace();
 												}
@@ -120,7 +122,7 @@ public class MainActivity extends AppCompatActivity
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				ApplicationController.getInstance().doUserGet();
+				AuthController.getInstance().doUserGet();
 				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 						.setAction("Action", null).show();
 			}
@@ -179,10 +181,11 @@ public class MainActivity extends AppCompatActivity
 		} else if (id == R.id.nav_login) {
 			LoginActivity.navigate(this);
 		} else if (id == R.id.nav_request_password_reset) {
+			AuthController.getInstance().getUser().setEmail("inlacou@sharklasers.com");
 			AuthController.getInstance().doRequestPasswordReset(new VolleyController.IOCallbacks() {
 				@Override
-				public void onResponse(String s, String s1) {
-					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
+				public void onResponse(CustomResponse customResponse, String s1) {
+					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + customResponse.getData());
 				}
 
 				@Override
@@ -193,8 +196,8 @@ public class MainActivity extends AppCompatActivity
 		} else if (id == R.id.nav_request_magic_login) {
 			AuthController.getInstance().doRequestMagicLogin(AuthController.getInstance().getUser().getEmail(), new VolleyController.IOCallbacks() {
 				@Override
-				public void onResponse(String s, String s1) {
-					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
+				public void onResponse(CustomResponse customResponse, String s1) {
+					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + customResponse.getData());
 				}
 
 				@Override
@@ -205,8 +208,8 @@ public class MainActivity extends AppCompatActivity
 		} else if (id == R.id.nav_logout) {
 			AuthController.getInstance().doLogout(new VolleyController.IOCallbacks() {
 				@Override
-				public void onResponse(String s, String s1) {
-					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
+				public void onResponse(CustomResponse customResponse, String s1) {
+					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + customResponse.getData());
 					//TODO logout
 					Log.d(DEBUG_TAG, "TODO logout");
 				}

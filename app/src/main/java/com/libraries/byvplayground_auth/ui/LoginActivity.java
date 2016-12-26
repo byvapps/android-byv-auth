@@ -19,8 +19,11 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.libraries.auth.AuthController;
+import com.libraries.byvplayground_auth.BuildConfig;
 import com.libraries.byvplayground_auth.R;
+import com.libraries.byvplayground_auth.general.ApplicationController;
 import com.libraries.byvplayground_auth.general.UrlLogic;
+import com.libraries.inlacou.volleycontroller.CustomResponse;
 import com.libraries.inlacou.volleycontroller.InternetCall;
 import com.libraries.inlacou.volleycontroller.VolleyController;
 
@@ -52,6 +55,8 @@ public class LoginActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+
+		//ApplicationController.getInstance().eraseAllAndRestart(null);
 		// Set up the login form.
 		mEmailView = (TextInputEditText) findViewById(R.id.email);
 
@@ -66,6 +71,11 @@ public class LoginActivity extends AppCompatActivity {
 				return false;
 			}
 		});
+
+		if(BuildConfig.DEBUG){
+			mEmailView.setText("inlacou@sharklasers.com");
+			mPasswordView.setText("qwerty");
+		}
 
 		Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 		mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -124,11 +134,11 @@ public class LoginActivity extends AppCompatActivity {
 			showProgress(true);
 			AuthController.getInstance().doLogin(email, password, new VolleyController.IOCallbacks() {
 				@Override
-				public void onResponse(String s, String s1) {
-					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + s);
+				public void onResponse(CustomResponse customResponse, String s1) {
+					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + customResponse.getData());
 					showProgress(false);
 					try {
-						JSONObject jsonObject = new JSONObject(s);
+						JSONObject jsonObject = new JSONObject(customResponse.getData());
 						AuthController.getInstance().onLogin(jsonObject);
 					} catch (JSONException e) {
 						e.printStackTrace();

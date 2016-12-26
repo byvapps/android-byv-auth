@@ -16,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.libraries.auth.AuthController;
 import com.libraries.byvplayground_auth.R;
 import com.libraries.byvplayground_auth.general.UrlLogic;
+import com.libraries.inlacou.volleycontroller.CustomResponse;
 import com.libraries.inlacou.volleycontroller.InternetCall;
 import com.libraries.inlacou.volleycontroller.VolleyController;
 
@@ -95,10 +96,10 @@ public class ChangePasswordActivity extends AppCompatActivity {
 			public void onClick(View view) {
 				AuthController.getInstance().doChangePassword(code, editTextNewPassword.getText().toString(), new VolleyController.IOCallbacks() {
 					@Override
-					public void onResponse(String s, String s1) {
-						Log.d(DEBUG_TAG, "Code: " + s1 + " | Response: " + s);
+					public void onResponse(CustomResponse customResponse, String s1) {
+						Log.d(DEBUG_TAG, "Code: " + s1 + " | Response: " + customResponse.getData());
 						try {
-							AuthController.getInstance().onLogin(new JSONObject(s));
+							AuthController.getInstance().onLogin(new JSONObject(customResponse.getData()));
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
