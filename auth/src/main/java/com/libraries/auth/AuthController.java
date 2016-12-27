@@ -52,6 +52,13 @@ public class AuthController {
 		return clientSecret;
 	}
 
+	public void eraseAll(){
+		auth = null;
+		callbacks.saveAuthData(null);
+		user = null;
+		callbacks.saveUserData(null);
+	}
+
 	public void onLogin(JSONObject jsonObject) {
 		auth = new Auth(jsonObject);
 		callbacks.saveAuthData(auth);
@@ -203,7 +210,6 @@ public class AuthController {
 		 * @param url
 		 * @param headers
 		 * @param params
-		 * @param callback
 		 */
 		void onUserGet(String url, Map<String, String> headers, Map<String, String> params);
 	}
