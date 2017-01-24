@@ -156,7 +156,7 @@ public class AuthController {
 	}
 
 	public void doUserGet() {
-		callbacks.onUserGet(baseUrl+"/api/profile", null, null);
+		callbacks.onUserGet(baseUrl+"/api/me", null, null);
 	}
 
 	public enum GrantType {
