@@ -1,7 +1,7 @@
 package com.libraries.auth;
 
+import android.app.Activity;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 
 import org.json.JSONObject;
 
@@ -119,7 +119,7 @@ public class AuthController {
 	 * @param callback for network calls.
 	 * @return
 	 */
-	public boolean manageAppOpenUri(AppCompatActivity appCompatActivity, Uri uri, Object callback) {
+	public boolean manageAppOpenUri(Activity appCompatActivity, Uri uri, Object callback) {
 		switch (AuthController.LinkAction.fromString(uri.getPath())){
 			case MAGIC_LOGIN:
 				HashMap<String, String> params = new HashMap<>();
@@ -201,7 +201,7 @@ public class AuthController {
 		void onRequestMagicLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback);
 		void onPasswordChange(String url, Map<String, String> headers, Map<String, String> params, Object callback);
 		void onAppOpenMagicLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback);
-		void onAppOpenChangePassword(AppCompatActivity appCompatActivity, String code);
+		void onAppOpenChangePassword(Activity appCompatActivity, String code);
 		void onRegister(String url, Map<String, String> headers, Map<String, String> params, Object callback);
 		void onPostLogin(String url, Map<String, String> headers, Map<String, String> params, Object callback);
 

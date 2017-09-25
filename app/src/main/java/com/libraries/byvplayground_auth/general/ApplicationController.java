@@ -332,8 +332,8 @@ public class ApplicationController extends Application {
 			}
 
 			@Override
-			public void onAppOpenChangePassword(AppCompatActivity appCompatActivity, String code) {
-				ChangePasswordActivity.navigate(appCompatActivity, code);
+			public void onAppOpenChangePassword(Activity appCompatActivity, String code) {
+				ChangePasswordActivity.navigate((AppCompatActivity) appCompatActivity, code);
 			}
 
 			@Override
