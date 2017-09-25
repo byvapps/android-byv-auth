@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
 
 	private static final String DEBUG_TAG = MainActivity.class.getName();
 	private GoogleApiClient mGoogleApiClient;
+	private boolean waiting;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity
 										Log.d(DEBUG_TAG+".getInvitation", "getQueryParameter: " + uri.getQueryParameter("code"));
 										Log.d(DEBUG_TAG+".getInvitation", "getEncodedPath: " + uri.getEncodedPath());
 										Log.d(DEBUG_TAG+".getInvitation", "getPath: " + uri.getPath());
-										boolean consumed = AuthController.getInstance().manageAppOpenUri(MainActivity.this, uri, new VolleyController.IOCallbacks() {
+										waiting = AuthController.getInstance().manageAppOpenUri(MainActivity.this, uri, new VolleyController.IOCallbacks() {
 											@Override
 											public void onResponse(CustomResponse customResponse, String s1) {
 												Log.d(DEBUG_TAG+".getInvitation", "Code: " + s1 + " | Response: " + customResponse.getData());
