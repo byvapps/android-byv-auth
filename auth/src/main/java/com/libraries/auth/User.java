@@ -26,8 +26,7 @@ import org.json.JSONObject;
 */
 public class User {
 
-	private long id, createdAt, updatedAt;
-	private String username;
+	private String id, createdAt, updatedAt, username;
 
 	public User(JSONObject jsonObject){
 		if(jsonObject.has("user")){
@@ -39,28 +38,28 @@ public class User {
 		}
 		if(jsonObject.has("_id")){
 			try {
-				id = jsonObject.getLong("_id");
+				id = jsonObject.getString("_id");
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
 		if(jsonObject.has("id")){
 			try {
-				id = jsonObject.getLong("id");
+				id = jsonObject.getString("id");
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
 		if(jsonObject.has("createdAt")){
 			try {
-				createdAt = jsonObject.getLong("createdAt");
+				createdAt = jsonObject.getString("createdAt");
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
 		if(jsonObject.has("updatedAt")){
 			try {
-				updatedAt = jsonObject.getLong("updatedAt");
+				updatedAt = jsonObject.getString("updatedAt");
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -74,15 +73,15 @@ public class User {
 		}
 	}
 
-	public long getId() {
+	public String getId() {
 		return id;
 	}
 
-	public long getCreatedAt() {
+	public String getCreatedAt() {
 		return createdAt;
 	}
 
-	public long getUpdatedAt() {
+	public String getUpdatedAt() {
 		return updatedAt;
 	}
 

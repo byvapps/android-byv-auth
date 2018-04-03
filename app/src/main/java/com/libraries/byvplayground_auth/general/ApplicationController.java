@@ -208,7 +208,7 @@ public class ApplicationController extends Application {
 				internetCall.putHeader("deviceid", DeviceController.getInstance().getDevice().getId()+"");
 			}
 		});
-		AuthController.getInstance().init(UrlLogic.getBaseUrl(), "app", "secret-app", new AuthController.Callbacks() {
+		AuthController.getInstance().init(UrlLogic.getBaseUrl(), "app", new AuthController.Callbacks() {
 			@Override
 			public void saveAuthData(Auth auth) {
 				SharedPreferencesManager.getInstance().setAuth(auth);
