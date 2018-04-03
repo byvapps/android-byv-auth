@@ -30,6 +30,7 @@ public class AuthController {
 	public void init(String baseUrl, String clientId, Callbacks callbacks){
 		this.baseUrl = baseUrl;
 		this.clientId = clientId;
+        this.callbacks = callbacks;
 		auth = callbacks.loadAuthData();
 		user = callbacks.loadUserData();
 	}
