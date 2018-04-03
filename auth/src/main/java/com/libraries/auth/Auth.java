@@ -9,9 +9,9 @@ import org.json.JSONObject;
 
 public class Auth {
 
-	String token_type, access_token, refresh_token;
+	private String token_type, access_token, refresh_token;
 
-	public Auth(JSONObject jsonObject){
+	Auth(JSONObject jsonObject){
 		if(jsonObject.has("token_type")){
 			try {
 				token_type = jsonObject.getString("token_type");
@@ -19,9 +19,23 @@ public class Auth {
 				e.printStackTrace();
 			}
 		}
+		if(jsonObject.has("accessToken")){
+			try {
+				access_token = jsonObject.getString("accessToken");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 		if(jsonObject.has("access_token")){
 			try {
 				access_token = jsonObject.getString("access_token");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		if(jsonObject.has("refreshToken")){
+			try {
+				refresh_token = jsonObject.getString("refreshToken");
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -34,11 +48,7 @@ public class Auth {
 			}
 		}
 	}
-
-	public String getToken_type() {
-		return token_type;
-	}
-
+	
 	public String getAccess_token() {
 		return access_token;
 	}

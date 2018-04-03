@@ -9,47 +9,37 @@ import org.json.JSONObject;
 
 /* Example.
  {
-	"user":
-    {
-		"id": 7,
-		"email": "inlacou2@sharklasers.com",
-		"createdAt": 1479206888000,
-		"updatedAt": 1479206888000
-	},
-	"device":
-    {
-		"id": 12,
-		"uid": "6139290a-11f4-4838-97eb-7f27453eb62f",
-		"name": "",
-		"os": "android",
-		"osVersion": "6.0.1",
-		"device": "osprey_umts",
-		"manufacturer": "motorola",
-		"model": "MotoG3",
-		"appVersion": "1.0",
-		"appVersionCode": "1",
-		"active": true,
-		"languageCode": "es",
-		"countryCode": "ES",
-		"currencyCode": "EUR",
-		"lastConnectionStart": 1479141842000,
-		"pushId": "TODO",
-		"badge": 0,
-		"ip": "::ffff:62.99.76.39",
-		"createdAt": 1479141842000,
-		"updatedAt": 1479147849000
-	}
- }
- */
+	"user": {
+    "name": "",
+    "username": "+34607545596",
+    "admin": false,
+    "_id": "5ac3807a657dd700100733a1",
+    "createdAt": "2018-04-03T13:24:10.205Z",
+    "updatedAt": "2018-04-03T13:24:10.206Z",
+    "__v": 0
+  },
+  "accessToken": "hZQ4OnPfQzb8jzoZ",
+  "refreshToken": "9S4Y7cYnycjeYxesDh2kP7yzXjJZxpMm",
+  "accessTokenExpiresAt": "2018-04-03T14:24:10.223Z",
+  "refreshTokenExpiresAt": "2019-05-25T04:24:10.223Z"
+}
+*/
 public class User {
 
 	private long id, createdAt, updatedAt;
-	private String email;
+	private String username;
 
 	public User(JSONObject jsonObject){
 		if(jsonObject.has("user")){
 			try {
 				jsonObject = jsonObject.getJSONObject("user");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		if(jsonObject.has("_id")){
+			try {
+				id = jsonObject.getLong("_id");
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -75,9 +65,9 @@ public class User {
 				e.printStackTrace();
 			}
 		}
-		if(jsonObject.has("email")){
+		if(jsonObject.has("username")){
 			try {
-				email = jsonObject.getString("email");
+				username = jsonObject.getString("username");
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -96,19 +86,12 @@ public class User {
 		return updatedAt;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setCreatedAt(long createdAt) {
-		this.createdAt = createdAt;
+	public void setUsername(String s){
+		username = s;
 	}
-
-	public void setUpdatedAt(long updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
+	
 }

@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity
 		} else if (id == R.id.nav_login) {
 			LoginActivity.navigate(this);
 		} else if (id == R.id.nav_request_password_reset) {
-			AuthController.getInstance().getUser().setEmail("inlacou@sharklasers.com");
+			AuthController.getInstance().getUser().setUsername("inlacou@sharklasers.com");
 			AuthController.getInstance().doRequestPasswordReset(new VolleyController.IOCallbacks() {
 				@Override
 				public void onResponse(CustomResponse customResponse, String s1) {
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity
 				}
 			});
 		} else if (id == R.id.nav_request_magic_login) {
-			AuthController.getInstance().doRequestMagicLogin(AuthController.getInstance().getUser().getEmail(), new VolleyController.IOCallbacks() {
+			AuthController.getInstance().doRequestMagicLogin(AuthController.getInstance().getUser().getUsername(), new VolleyController.IOCallbacks() {
 				@Override
 				public void onResponse(CustomResponse customResponse, String s1) {
 					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + customResponse.getData());

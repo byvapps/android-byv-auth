@@ -14,7 +14,7 @@ import java.util.Map;
 public class AuthController {
 
 	private static AuthController ourInstance = new AuthController();
-	private String clientId, clientSecret;
+	private String clientId;
 	private Callbacks callbacks;
 	private Auth auth;
 	private User user;
@@ -27,11 +27,9 @@ public class AuthController {
 	private AuthController() {
 	}
 
-	public void init(String baseUrl, String clientId, String clientSecret, Callbacks callbacks){
+	public void init(String baseUrl, String clientId, Callbacks callbacks){
 		this.baseUrl = baseUrl;
 		this.clientId = clientId;
-		this.clientSecret = clientSecret;
-		this.callbacks = callbacks;
 		auth = callbacks.loadAuthData();
 		user = callbacks.loadUserData();
 	}
@@ -46,10 +44,6 @@ public class AuthController {
 
 	public String getClientId() {
 		return clientId;
-	}
-
-	public String getClientSecret() {
-		return clientSecret;
 	}
 
 	public void eraseAll(){
@@ -82,7 +76,7 @@ public class AuthController {
 	}
 
 	public void doLogout(Object callback) {
-		callbacks.onLogout(baseUrl+"/auth/logout", null, null, callback);
+		callbacks.onLogout(baseUrl+"/"+GrantType.LOGOUT, null, null, callback);
 	}
 
 	public void doSocialLogin(String code, Object callback) {
@@ -100,7 +94,7 @@ public class AuthController {
 
 	public void doRequestPasswordReset(Object callback) {
 		HashMap<String, String> params = new HashMap<>();
-		params.put("email", AuthController.getInstance().getUser().getEmail());
+		params.put("email", AuthController.getInstance().getUser().getUsername());
 		callbacks.onRequestPasswordReset(baseUrl+"/auth-password/api/reset", null, params, callback);
 	}
 
@@ -142,25 +136,30 @@ public class AuthController {
 		params.put("username", email);
 		params.put("password", password);
 		params.put("name", name);
-		params.put("grant_type", AuthController.GrantType.REGISTER.toString());
-		callbacks.onRegister(baseUrl+"/auth/token", null, params, callback);
+		callbacks.onRegister(baseUrl+"/"+GrantType.REGISTER, null, params, callback);
 	}
 
 	public void doLogin(String email, String password, Object callback) {
 		HashMap<String, String> params = new HashMap<>();
 		params.put("username", email);
 		params.put("password", password);
-		params.put("grant_type", AuthController.GrantType.LOGIN.toString());
 
-		callbacks.onPostLogin(baseUrl+"/auth/token", null, params, callback);
+		callbacks.onPostLogin(baseUrl+"/"+GrantType.LOGIN, null, params, callback);
 	}
 
 	public void doUserGet() {
-		callbacks.onUserGet(baseUrl+"/api/me", null, null);
+		callbacks.onUserGet(baseUrl+"/"+GrantType.ME, null, null);
 	}
 
 	public enum GrantType {
-		LOGIN("password"), REGISTER("signup"), PASSWORD_RESET("password_reset"), SOCIAL_LOGIN("code"), MAGIC_LINK("magic_link"), REFRESH_TOKEN("refresh_token");
+		ME("me"),
+		LOGIN("login"),
+		REGISTER("signup"),
+		LOGOUT("logout"),
+		PASSWORD_RESET("password_reset"),
+		SOCIAL_LOGIN("code"),
+		MAGIC_LINK("magic_link"),
+		REFRESH_TOKEN("refresh_token");
 
 		String value;
 

@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-	compileSdkVersion 25
-	buildToolsVersion "25.0.0"
+	compileSdkVersion 27
+	buildToolsVersion '27.0.3'
 	defaultConfig {
 		applicationId "com.libraries.byvplayground_auth"
 		minSdkVersion 16
-		targetSdkVersion 25
+		targetSdkVersion 27
 		versionCode 1
 		versionName "1.0"
 		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,25 +20,24 @@ android {
 }
 
 ext {
-	firebase_version = "9.8.0"
+	firebase_version = "12.0.0"
 }
 
 dependencies {
-	compile fileTree(include: ['*.jar'], dir: 'libs')
-	androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+	implementation fileTree(include: ['*.jar'], dir: 'libs')
+	androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
 		exclude group: 'com.android.support', module: 'support-annotations'
 	})
-	compile project(':auth')
-	compile 'com.android.support:appcompat-v7:25.0.1'
-	compile 'com.android.support:design:25.0.1'
-	compile "com.google.firebase:firebase-core:${firebase_version}"             //Firebase core
-	compile "com.google.firebase:firebase-messaging:${firebase_version}"        //Firebase messaging
-	compile "com.google.firebase:firebase-invites:${firebase_version}"
-	compile 'com.google.code.gson:gson:2.5'                                     //JSON utilities
-	compile 'com.github.inlacou:VolleyControllerLibrary:2.2.3.4'
-	compile 'com.github.byvapps:android-byv-devices:1.0.4'
-	testCompile 'junit:junit:4.12'
+	implementation project(':auth')
+	implementation 'com.android.support:appcompat-v7:27.1.0'
+	implementation 'com.android.support:design:27.1.0'
+	implementation "com.google.firebase:firebase-core:${firebase_version}"             //Firebase core
+	implementation "com.google.firebase:firebase-messaging:${firebase_version}"        //Firebase messaging
+	implementation "com.google.firebase:firebase-invites:${firebase_version}"
+	implementation 'com.google.code.gson:gson:2.8.2'                                     //JSON utilities
+	implementation 'com.github.inlacou:VolleyControllerLibrary:2.2.5.3'
+	implementation 'com.github.byvapps:android-byv-devices:1.0.8'
+	testImplementation 'junit:junit:4.12'
 }
-
 
 apply plugin: 'com.google.gms.google-services'

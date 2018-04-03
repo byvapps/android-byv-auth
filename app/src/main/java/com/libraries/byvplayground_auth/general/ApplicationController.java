@@ -69,7 +69,7 @@ public class ApplicationController extends Application {
 		super.onCreate();
 		// initialize the singleton
 		sInstance = this;
-		VolleyController.getInstance().init(this, new VolleyController.LogicCallbacks() {
+		VolleyController.getInstance().init(this, true, new VolleyController.LogicCallbacks() {
 			@Override
 			public void setTokens(JSONObject jsonObject) {
 				//Save authToken
@@ -205,7 +205,7 @@ public class ApplicationController extends Application {
 		VolleyController.getInstance().addInterceptor(new InternetCall.Interceptor() {
 			@Override
 			public void intercept(InternetCall internetCall) {
-				internetCall.putHeader("deviceId", DeviceController.getInstance().getDevice().getId()+"");
+				internetCall.putHeader("deviceid", DeviceController.getInstance().getDevice().getId()+"");
 			}
 		});
 		AuthController.getInstance().init(UrlLogic.getBaseUrl(), "app", "secret-app", new AuthController.Callbacks() {
@@ -363,7 +363,6 @@ public class ApplicationController extends Application {
 			public void intercept(InternetCall internetCall) {
 				if(internetCall.getRawBody()==null || internetCall.getRawBody().isEmpty()) {
 					internetCall.putParam("client_id", AuthController.getInstance().getClientId());
-					internetCall.putParam("client_secret", AuthController.getInstance().getClientSecret());
 				}
 				if(AuthController.getInstance().getAuth()!=null) internetCall.putHeader("Authorization", "Bearer " + AuthController.getInstance().getAuth().getAccess_token());
 			}
