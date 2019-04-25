@@ -132,14 +132,14 @@ public class LoginActivity extends AppCompatActivity {
 			// Show a progress spinner, and kick off a background task to
 			// perform the user login attempt.
 			showProgress(true);
-			AuthController.getInstance().doLogin(email, password, new VolleyController.IOCallbacks() {
+			AuthController.INSTANCE.doLogin(email, password, new VolleyController.IOCallbacks() {
 				@Override
 				public void onResponse(CustomResponse customResponse, String s1) {
 					Log.d(DEBUG_TAG, "Code " + s1 + " | ResponseJson: " + customResponse.getData());
 					showProgress(false);
 					try {
 						JSONObject jsonObject = new JSONObject(customResponse.getData());
-						AuthController.getInstance().onLogin(jsonObject);
+						AuthController.INSTANCE.onLogin(jsonObject);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
